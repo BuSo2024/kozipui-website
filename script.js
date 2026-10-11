@@ -138,3 +138,72 @@ heroMotionPreference.addEventListener('change', scheduleHeroRotation);
 document.addEventListener('visibilitychange', () => { renderHeroShowcase(); scheduleHeroRotation(); });
 renderHeroShowcase();
 scheduleHeroRotation();
+
+// Header-only scroll, contextual CTA and basket feedback.
+const siteHeader = document.querySelector('.header');
+const headerMobileQuery = matchMedia('(max-width: 800px)');
+const headerReducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const headerCta = siteHeader.querySelector('.header-cta');
+let headerLastScrollY = Math.max(0, window.scrollY);
+let headerScrollFrame;
+function revealHeader() {
+  siteHeader.classList.remove('is-hidden');
+  siteHeader.inert = false;
+}
+function updateHeaderScroll() {
+  const y = Math.max(0, window.scrollY);
+  const compact = siteHeader.classList.contains('is-scrolled');
+  siteHeader.classList.toggle('is-scrolled', compact ? y > 20 : y > 80);
+  const delta = y - headerLastScrollY;
+  const menuOpen = document.querySelector('#menu-toggle').getAttribute('aria-expanded') === 'true';
+  if (!headerMobileQuery.matches || y < 100 || menuOpen || siteHeader.contains(document.activeElement)) {
+    revealHeader();
+  } else if (Math.abs(delta) >= 6) {
+    const hide = delta > 0;
+    siteHeader.classList.toggle('is-hidden', hide);
+    siteHeader.inert = hide;
+  }
+  if (Math.abs(delta) >= 6 || y < 100) headerLastScrollY = y;
+  headerScrollFrame = undefined;
+}
+window.addEventListener('scroll', () => {
+  if (headerScrollFrame === undefined) headerScrollFrame = requestAnimationFrame(updateHeaderScroll);
+}, { passive: true });
+headerMobileQuery.addEventListener('change', () => { revealHeader(); headerLastScrollY = window.scrollY; updateHeaderScroll(); });
+document.addEventListener('keydown', event => { if (event.key === 'Tab' || event.key === 'Escape') revealHeader(); });
+siteHeader.addEventListener('focusin', revealHeader);
+document.querySelector('#menu-toggle').addEventListener('click', revealHeader);
+function updateHeaderLanguage() {
+  headerCta.textContent = lang === 'tr' ? 'Kişiselleştir' : 'Personalize';
+}
+document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', updateHeaderLanguage));
+const heroActionObserver = new IntersectionObserver(entries => {
+  const entry = entries[0];
+  const pastHeroActions = !entry.isIntersecting && entry.boundingClientRect.bottom <= 64;
+  siteHeader.classList.toggle('has-context-cta', pastHeroActions);
+  headerCta.hidden = !pastHeroActions;
+}, { rootMargin: '-64px 0px 0px 0px', threshold: 0 });
+heroActionObserver.observe(document.querySelector('.hero-copy .actions'));
+const headerMenuLinks = [...siteHeader.querySelectorAll('.desktop-nav a, #mobile-menu a')];
+function updateHeaderActiveLink() {
+  headerMenuLinks.forEach(link => {
+    if (link.hash === window.location.hash) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+window.addEventListener('hashchange', updateHeaderActiveLink);
+let headerBasketCount = basket.length;
+const headerBadge = siteHeader.querySelector('.basket-count');
+new MutationObserver(() => {
+  const count = Number(headerBadge.textContent);
+  if (count > headerBasketCount && !headerReducedMotion.matches) {
+    headerBadge.classList.remove('is-bouncing');
+    void headerBadge.offsetWidth;
+    headerBadge.classList.add('is-bouncing');
+  }
+  headerBasketCount = count;
+}).observe(headerBadge, { childList: true, characterData: true, subtree: true });
+headerBadge.addEventListener('animationend', () => headerBadge.classList.remove('is-bouncing'));
+updateHeaderLanguage();
+updateHeaderActiveLink();
+updateHeaderScroll();
