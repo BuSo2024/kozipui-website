@@ -186,7 +186,7 @@ body.mobile-menu-open{overflow:hidden}body.mobile-menu-open .bottom-nav{visibili
 .header .brand img,.header.is-scrolled .brand img{width:clamp(112px,calc(100vw - 208px),240px);height:auto;max-width:100%;max-height:none}
 .header .hamburger{min-width:80px;height:44px;padding:0 8px;gap:4px}
 .header .menu-word{font-size:11px}.header .menu-symbol{font-size:16px}
-.hero .hero-art{aspect-ratio:1.6;min-height:230px;border-radius:32px;clip-path:none;background:radial-gradient(ellipse at 78% 15%,#fff8,transparent 55%),linear-gradient(130deg,#EAF3FB,#D7E8F6);filter:drop-shadow(0 9px 12px #6e829510)}
+.hero .hero-art{aspect-ratio:1.6;min-height:230px;border-radius:32px;clip-path:url(#mobile-hero-shape);background:radial-gradient(ellipse at 78% 15%,#fff8,transparent 55%),linear-gradient(130deg,#EAF3FB,#D7E8F6);filter:drop-shadow(0 9px 12px #6e829510)}
 .mobile-animation-stage::before{content:"";position:absolute;right:-8%;top:12%;width:66%;height:72%;border-radius:48% 52% 38% 62%;background:#ffffff50;rotate:12deg;box-shadow:inset 0 0 28px #ffffff80;pointer-events:none}
 .mobile-animation-stage::after{content:"";position:absolute;left:4%;top:15%;width:30%;height:60%;border:1px dotted #6e829530;border-right-color:transparent;border-radius:50%;rotate:-20deg;pointer-events:none}
 .stage-script{left:20px;top:22px}
@@ -241,8 +241,8 @@ body{padding-top:80px;padding-bottom:calc(86px + env(safe-area-inset-bottom));ba
 /* Keep the mobile contents above the custom curved lower edge. */
 @media(max-width:800px){.hero .mobile-animation-stage{bottom:16%}}
 
-/* A white overlay softens the mobile card base without clipping its contents. */
+/* Mobile hero silhouette follows the reference without a white overlay. */
 @media(max-width:800px){
-.hero .hero-art::after{content:"";position:absolute;bottom:-1px;left:0;width:100%;height:clamp(55px,16vw,75px);background:#FFFFFF;clip-path:url(#mobile-hero-transition);z-index:0;pointer-events:none}
+.hero .hero-art::after{content:none}
 .hero .mobile-animation-stage{z-index:1}
 }
