@@ -216,8 +216,15 @@ updateHeaderActiveLink();
 updateHeaderScroll();
 
 
-// Mobile homepage: menu panel, occasion context and fixed navigation state.
-let selectedOccasion = 'wedding';
+// Occasion links prepare catalog context; the homepage has no selected occasion.
+let selectedOccasion = '';
+const catalogOccasions = new Map([
+  ['wedding', 'wedding'], ['baptism', 'baptism'], ['new-year', 'newyear'],
+  ['baby', 'baby'], ['gift', 'gift']
+]);
+function syncCatalogOccasion() {
+  selectedOccasion = catalogOccasions.get(new URLSearchParams(location.search).get('occasion')) || '';
+}
 function updateMobileMenuLabel() {
   const open = !document.querySelector('#mobile-menu').hidden;
   const label = open ? (lang === 'tr' ? 'Kapat' : 'Close') : (lang === 'tr' ? 'Menü' : 'Menu');
@@ -245,11 +252,22 @@ document.addEventListener('keydown', event => {
   if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
   else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 });
-document.querySelectorAll('[data-occasion]').forEach(button => button.addEventListener('click', () => {
-  selectedOccasion = button.dataset.occasion;
-  document.querySelectorAll('[data-occasion]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+document.querySelectorAll('.occasion-chips a').forEach(link => link.addEventListener('click', event => {
+  if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  if (link.href !== location.href) history.pushState(null, '', link.href);
+  syncCatalogOccasion();
+  updateHeaderActiveLink();
+  updateBottomNavigation();
   document.querySelector('#catalog').scrollIntoView({ behavior: headerReducedMotion.matches ? 'instant' : 'smooth' });
 }));
+window.addEventListener('popstate', () => {
+  syncCatalogOccasion();
+  updateHeaderActiveLink();
+  updateBottomNavigation();
+  if (location.hash === '#catalog') document.querySelector('#catalog').scrollIntoView({ behavior: headerReducedMotion.matches ? 'instant' : 'smooth' });
+});
+syncCatalogOccasion();
 function updateBottomNavigation() {
   const target = location.hash || '#catalog';
   document.querySelectorAll('.bottom-nav a').forEach(link => {
