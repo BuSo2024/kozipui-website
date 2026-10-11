@@ -258,26 +258,56 @@ document.querySelectorAll('.occasion-chips a').forEach(link => link.addEventList
   if (link.href !== location.href) history.pushState(null, '', link.href);
   syncCatalogOccasion();
   updateHeaderActiveLink();
-  updateBottomNavigation();
+  updateBottomNavigation({ useURL: true });
   document.querySelector('#catalog').scrollIntoView({ behavior: headerReducedMotion.matches ? 'instant' : 'smooth' });
 }));
 window.addEventListener('popstate', () => {
   syncCatalogOccasion();
   updateHeaderActiveLink();
-  updateBottomNavigation();
+  updateBottomNavigation({ useURL: true });
   if (location.hash === '#catalog') document.querySelector('#catalog').scrollIntoView({ behavior: headerReducedMotion.matches ? 'instant' : 'smooth' });
 });
 syncCatalogOccasion();
-function updateBottomNavigation() {
-  const target = location.hash || '#catalog';
-  document.querySelectorAll('.bottom-nav a').forEach(link => {
-    if (link.hash === target) link.setAttribute('aria-current', 'location');
-    else link.removeAttribute('aria-current');
+const bottomNavigationItems = [...document.querySelectorAll('.bottom-nav > a, .bottom-nav > button')];
+const bottomNavigationSections = [document.querySelector('#catalog'), document.querySelector('#personalization')];
+function currentBottomNavigationSection() {
+  // A preview near the viewport bottom does not make it the current section.
+  const readingLine = Math.max(0, siteHeader.getBoundingClientRect().bottom) + 24;
+  const section = bottomNavigationSections.find(element => {
+    const rect = element.getBoundingClientRect();
+    return rect.top <= readingLine && rect.bottom > readingLine;
+  });
+  return section ? `#${section.id}` : '';
+}
+function updateBottomNavigation({ useURL = false } = {}) {
+  let target = '';
+  if (headerMobileQuery.matches) {
+    if (document.querySelector('#basket-dialog').open) target = 'cart';
+    else {
+      const anchor = location.hash.split('?')[0];
+      target = useURL && ['#catalog', '#personalization'].includes(anchor) ? anchor : currentBottomNavigationSection();
+    }
+  }
+  bottomNavigationItems.forEach(item => {
+    const active = item.matches('a') ? item.hash === target : item.matches('.basket-trigger') && target === 'cart';
+    if (active) item.setAttribute('aria-current', 'location');
+    else item.removeAttribute('aria-current');
   });
 }
-window.addEventListener('hashchange', updateBottomNavigation);
+let bottomNavigationFrame;
+function scheduleBottomNavigationUpdate() {
+  if (bottomNavigationFrame !== undefined) return;
+  bottomNavigationFrame = requestAnimationFrame(() => {
+    bottomNavigationFrame = undefined;
+    updateBottomNavigation();
+  });
+}
+window.addEventListener('scroll', scheduleBottomNavigationUpdate, { passive: true });
+window.addEventListener('resize', scheduleBottomNavigationUpdate);
+window.addEventListener('hashchange', () => updateBottomNavigation({ useURL: true }));
+new MutationObserver(() => updateBottomNavigation()).observe(document.querySelector('#basket-dialog'), { attributes: true, attributeFilter: ['open'] });
 updateMobileMenuLabel();
-updateBottomNavigation();
+updateBottomNavigation({ useURL: true });
 function formatMobileHeadline() {
   const headline = document.querySelector('[data-i18n="mobileHeadline"]');
   const parts = t('mobileHeadline').split(', ');
