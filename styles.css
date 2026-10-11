@@ -237,4 +237,6 @@ body{padding-top:80px;padding-bottom:calc(86px + env(safe-area-inset-bottom));ba
 
 /* Only the hero silhouette and its immediate connection to the headline. */
 @media(max-width:800px){.hero{gap:4px}}
-@media(min-width:600px) and (max-width:800px){.hero .hero-art{clip-path:url(#mobile-stage-shape-wide)}}
+
+/* Keep the mobile contents above the custom curved lower edge. */
+@media(max-width:800px){.hero .mobile-animation-stage{bottom:16%}}
