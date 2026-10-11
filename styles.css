@@ -225,3 +225,12 @@ body{padding-top:80px;padding-bottom:calc(86px + env(safe-area-inset-bottom));ba
 #mobile-menu:not([hidden]){top:80px}
 }
 @media(max-width:360px){.header .brand img,.header.is-scrolled .brand img{width:calc(100vw - 178px)}.hero .hero-copy .button{font-size:10px}.hero .hero-art{min-height:210px}.stage-script{font-size:20px;max-width:82px}.stage-personal-tag{font-size:8px;left:6%}}
+
+/* Discreet language capsule in the mobile header only. */
+@media(max-width:800px){
+.header .header-tools>.languages{width:90px;height:40px;min-height:40px;padding:0;background:#FFFFFF;border:1px solid #C9D9E8;border-radius:999px;box-shadow:none}
+.header .header-tools>.languages button{position:relative;width:44px;min-width:44px;height:38px;min-height:38px;padding:0;border-radius:999px;background:transparent;color:#6B7785;font-size:10px;font-weight:650;box-shadow:none}
+.header .header-tools>.languages button::before{content:"";position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
+.header .header-tools>.languages button:hover{background:#F8FBFF}
+.header .header-tools>.languages button[aria-pressed=true]{background:#DCEAF7;color:#1F1B18;box-shadow:none}
+}
