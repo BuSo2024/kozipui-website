@@ -2,5 +2,5 @@
 
 .cart-icon{width:23px;height:23px;vertical-align:middle}.button:disabled{opacity:.45;cursor:default;transform:none}
 
-/* Display the original logo without cropping, recoloring or stretching. */
-.brand-logo{display:block;width:auto;height:56px;max-width:100%;object-fit:contain}.footer .brand{display:inline-flex;background:var(--white);border-radius:10px;padding:6px}.footer .brand-logo{height:76px}@media(max-width:800px){.header .brand-logo{height:44px}}
+/* Keep the original logo compact in the header only. */
+.header-brand{flex-shrink:0}.header .brand-logo{display:block;width:auto;max-height:56px;object-fit:contain}@media(max-width:800px){.header .brand-logo{max-height:44px}}
