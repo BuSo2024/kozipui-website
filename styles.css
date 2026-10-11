@@ -25,3 +25,34 @@ body:has(#contact:target) .header .desktop-nav a[href="#contact"]{background:var
 @media(min-width:801px) and (max-width:1000px){.header{gap:14px}.header .desktop-nav a{padding:10px 12px;font-size:12px}.header .header-tools{gap:8px}}
 @media(max-width:800px){.header{padding:8px 20px;gap:12px}.header .brand-logo{width:90px;height:auto}.header .desktop-nav{display:none}.header .header-tools{gap:8px}.header .hamburger{display:inline-flex}}
 @media(max-width:360px){.header{padding-left:15px;padding-right:15px;gap:8px}.header .brand-logo{width:82px}.header .header-tools{gap:3px}.header .icon-button{width:36px}}
+
+/* Native product showcase, isolated from the catalog and personalization. */
+.hero-showcase{background:linear-gradient(135deg,#EAF3FB,#D7E8F6);border:1px solid #cfdeeb;border-radius:32px;isolation:isolate}
+.hero-showcase .art-label{top:25px;left:28px;font-size:23px;color:#526d82}
+.showcase-products{position:absolute;inset:0}
+.showcase-card{position:absolute;top:88px;left:9%;width:62%;height:356px;margin:0;border-radius:22px;background:#fff;border:1px solid #c6d8e6;box-shadow:0 18px 32px #405d7833;transition:transform .85s cubic-bezier(.22,.7,.25,1),opacity .65s,box-shadow .85s;transform-origin:center;will-change:transform,opacity}
+.showcase-card img{height:280px;width:100%;object-fit:contain;padding:12px 8px 0}
+.showcase-card figcaption{padding:0 24px;line-height:1.5}
+.showcase-card strong{font:500 23px Georgia,serif;display:block}
+.showcase-card small{font-size:10px;color:var(--slate)}
+.showcase-card.is-active{z-index:3;opacity:1;transform:translate(0,0) rotate(-5deg) scale(1)}
+.showcase-card.is-next{z-index:2;opacity:1;transform:translate(62%,-4%) rotate(9deg) scale(.52);background:#f8fbff;box-shadow:0 22px 35px #405d783d}
+.showcase-card.is-previous{z-index:1;opacity:1;transform:translate(65%,47%) rotate(-7deg) scale(.5);background:#eaf3fb}
+.showcase-card.is-hidden{z-index:0;opacity:0;transform:translate(-14%,20%) rotate(-12deg) scale(.85);pointer-events:none}
+.showcase-thread{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.showcase-thread path{fill:none;stroke:var(--orange);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:9 5;animation:thread-travel 16s linear infinite}
+@keyframes thread-travel{to{stroke-dashoffset:-280}}
+.embroidery-accent{position:absolute;z-index:4;pointer-events:none;animation:stitch-drift 6s ease-in-out infinite}
+.accent-heart{left:18px;top:185px;color:var(--orange);font:42px Georgia,serif;rotate:-15deg}
+.accent-leaf{right:22px;bottom:89px;color:var(--olive);font:48px Georgia,serif;animation-delay:-2s;rotate:-18deg}
+.accent-name{left:35px;bottom:52px;color:var(--orange);font:italic 22px Georgia,serif;border-bottom:2px dotted var(--orange);rotate:-8deg;animation-delay:-4s}
+@keyframes stitch-drift{50%{translate:0 -5px}}
+.showcase-controls{position:absolute;right:20px;bottom:22px;display:flex;align-items:center;gap:14px;z-index:5}
+.showcase-position{font-size:10px;letter-spacing:2px;color:#526d82}
+.showcase-pause{border:1px solid #bdcfdd;border-radius:999px;background:#ffffffed;color:var(--ink);font-size:10px;padding:7px 12px;min-height:32px}
+.hero-showcase .concept-label{left:22px;bottom:12px;color:#526d82;font-size:8px}
+.hero-showcase.is-paused .showcase-thread path,.hero-showcase.is-paused .embroidery-accent{animation-play-state:paused}
+@media(max-width:1000px){.showcase-card{height:315px;top:75px}.showcase-card img{height:242px}.showcase-card figcaption{padding:0 18px}.showcase-card strong{font-size:20px}}
+@media(max-width:800px){.hero-showcase{height:480px}.showcase-card{height:340px;top:78px}.showcase-card img{height:265px}}
+@media(max-width:430px){.hero-showcase{height:420px;border-radius:25px}.hero-showcase .art-label{font-size:20px;left:22px;top:22px}.showcase-card{height:280px;top:77px;left:8%}.showcase-card img{height:214px}.showcase-card figcaption{padding:0 15px}.showcase-card strong{font-size:19px}.showcase-card small{font-size:9px}.accent-heart{font-size:30px;left:10px;top:140px}.accent-name{left:22px;bottom:42px;font-size:18px}.accent-leaf{font-size:32px;right:14px;bottom:79px}.showcase-controls{bottom:24px;right:12px;gap:8px}}
+@media(prefers-reduced-motion:reduce){.showcase-card{transition:none;will-change:auto}.showcase-thread path,.embroidery-accent{animation:none}.showcase-pause{display:none}}

@@ -98,3 +98,43 @@ $('#menu-toggle').addEventListener('click', () => { const open = $('#mobile-menu
 $('#mobile-menu').addEventListener('click', event => { if (event.target.closest('a')) { $('#mobile-menu').hidden = true; $('#menu-toggle').setAttribute('aria-expanded', 'false'); } });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') { $('#mobile-menu').hidden = true; $('#menu-toggle').setAttribute('aria-expanded', 'false'); } });
 $('#year').textContent = new Date().getFullYear(); setLanguage('tr');
+
+// Hero rotation is independent of catalog selection and personalization state.
+const heroShowcase = document.querySelector('.hero-showcase');
+const heroCards = [...document.querySelectorAll('[data-showcase-product]')];
+const heroMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+let heroIndex = 0;
+let heroPaused = false;
+let heroTimer;
+function renderHeroShowcase() {
+  heroCards.forEach((card, index) => {
+    const offset = (index - heroIndex + heroCards.length) % heroCards.length;
+    const role = ['is-active', 'is-next', 'is-hidden', 'is-previous'][offset];
+    card.classList.remove('is-active', 'is-next', 'is-hidden', 'is-previous');
+    card.classList.add(role);
+    card.setAttribute('aria-hidden', String(offset !== 0));
+    const product = products.find(item => item.id === card.dataset.showcaseProduct);
+    card.querySelector('.showcase-name').textContent = product[lang];
+  });
+  document.querySelector('.showcase-position').textContent = `${String(heroIndex + 1).padStart(2, '0')} / 04`;
+  const control = document.querySelector('.showcase-pause');
+  control.textContent = lang === 'tr' ? (heroPaused ? 'Devam et' : 'Duraklat') : (heroPaused ? 'Resume' : 'Pause');
+  control.setAttribute('aria-pressed', String(heroPaused));
+  heroShowcase.classList.toggle('is-paused', heroPaused || document.hidden);
+}
+function scheduleHeroRotation() {
+  clearInterval(heroTimer);
+  if (!heroPaused && !heroMotionPreference.matches && !document.hidden) {
+    heroTimer = setInterval(() => { heroIndex = (heroIndex + 1) % heroCards.length; renderHeroShowcase(); }, 3000);
+  }
+}
+document.querySelector('.showcase-pause').addEventListener('click', () => {
+  heroPaused = !heroPaused;
+  renderHeroShowcase();
+  scheduleHeroRotation();
+});
+document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', renderHeroShowcase));
+heroMotionPreference.addEventListener('change', scheduleHeroRotation);
+document.addEventListener('visibilitychange', () => { renderHeroShowcase(); scheduleHeroRotation(); });
+renderHeroShowcase();
+scheduleHeroRotation();
