@@ -41,7 +41,9 @@ function renderProducts() {
   $('#catalog-grid').replaceChildren(); $('#product-selector').replaceChildren();
   products.forEach(product => {
     const card = document.createElement('button'); card.className = 'catalog-card';
-    const visual = document.createElement('div'); visual.className = 'catalog-image'; visual.append(image(product));
+    const visual = document.createElement('div'); visual.className = 'catalog-image'; const catalogPicture = document.createElement('picture');
+    const mobileSource = document.createElement('source'); mobileSource.media = '(max-width:800px)'; mobileSource.srcset = `assets/images/hero/${product.id}.svg`;
+    catalogPicture.append(mobileSource, image(product)); visual.append(catalogPicture);
     const arrow = document.createElement('span'); arrow.className = 'arrow'; arrow.textContent = '↗'; arrow.setAttribute('aria-hidden', 'true'); visual.append(arrow);
     const title = document.createElement('h3'); title.textContent = product[lang];
     const line = document.createElement('p'); line.textContent = product[`${lang}Line`]; card.append(visual, title, line);
@@ -57,8 +59,8 @@ function renderColors() {
   colors.forEach(color => { const button = document.createElement('button'); button.className = 'swatch'; button.type = 'button'; button.style.backgroundColor = color.hex; button.title = color[lang]; button.setAttribute('aria-label', color[lang]); button.setAttribute('aria-pressed', String(color === selectedColor)); button.addEventListener('click', () => { selectedColor = color; renderColors(); updatePreview(); }); $('#swatches').append(button); });
 }
 function updatePreview() { $('#preview-image').src = `assets/images/${selectedProduct.id}.svg`; $('#preview-product').textContent = selectedProduct[lang]; $('#preview-text').textContent = $('#custom-text').value || t('noText'); $('#preview-text').style.color = selectedColor.hex; }
-function currentRequest() { return { product: selectedProduct.id, text: $('#custom-text').value.trim(), color: selectedColor.hex, note: $('#design-note').value.trim() }; }
-function requestMessage(request) { const product = products.find(item => item.id === request.product); const color = colors.find(item => item.hex === request.color); return [`${t('messageProduct')}: ${product[lang]}`, `${t('messageText')}: ${request.text}`, `${t('messageColor')}: ${color[lang]} (${color.hex})`, ...(request.note ? [`${t('messageNote')}: ${request.note}`] : [])].join('\n'); }
+function currentRequest() { return { product: selectedProduct.id, text: $('#custom-text').value.trim(), color: selectedColor.hex, note: $('#design-note').value.trim(), occasion: headerMobileQuery.matches ? selectedOccasion : '' }; }
+function requestMessage(request) { const product = products.find(item => item.id === request.product); const color = colors.find(item => item.hex === request.color); return [`${t('messageProduct')}: ${product[lang]}`, `${t('messageText')}: ${request.text}`, `${t('messageColor')}: ${color[lang]} (${color.hex})`, ...(request.note ? [`${t('messageNote')}: ${request.note}`] : []), ...(request.occasion ? [`${t('occasionLabel')}: ${t(request.occasion)}`] : [])].join('\n'); }
 function validText() { if (!$('#custom-text').value.trim()) { $('#custom-text').focus(); notify(t('textRequired')); return false; } return true; }
 function renderBasket() {
   $('#basket-items').replaceChildren(); document.querySelectorAll('.basket-count').forEach(el => el.textContent = basket.length);
@@ -94,15 +96,18 @@ $('#design-form').addEventListener('submit', event => { event.preventDefault(); 
 $('#design-whatsapp').addEventListener('click', () => { if (validFile()) sendWhatsApp(`${t('messageHello')}\n${t('messageFile')}: ${$('#design-file').files[0].name}\n${t('messageNote')}: ${$('#design-note').value.trim()}\n${t('attach')}\n${t('language')}: ${lang.toUpperCase()}`); });
 document.querySelectorAll('.contact-whatsapp').forEach(button => button.addEventListener('click', () => sendWhatsApp(`${t('generalMessage')}\n${t('language')}: ${lang.toUpperCase()}`)));
 document.querySelectorAll('.instagram-link').forEach(button => button.addEventListener('click', () => { if (!/^https:\/\/(www\.)?instagram\.com\//.test(INSTAGRAM_URL)) { notice(t('instagramMissing')); return; } window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer'); }));
-$('#menu-toggle').addEventListener('click', () => { const open = $('#mobile-menu').hidden; $('#mobile-menu').hidden = !open; $('#menu-toggle').setAttribute('aria-expanded', String(open)); });
-$('#mobile-menu').addEventListener('click', event => { if (event.target.closest('a')) { $('#mobile-menu').hidden = true; $('#menu-toggle').setAttribute('aria-expanded', 'false'); } });
-document.addEventListener('keydown', event => { if (event.key === 'Escape') { $('#mobile-menu').hidden = true; $('#menu-toggle').setAttribute('aria-expanded', 'false'); } });
+$('#menu-toggle').addEventListener('click', () => setMobileMenuOpen($('#mobile-menu').hidden));
+$('#mobile-menu').addEventListener('click', event => { if (event.target.closest('a')) setMobileMenuOpen(false); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape') setMobileMenuOpen(false); });
+Object.assign(translations.tr, { home:'Ana sayfa', mobileHeadline:'Her dikiş, size özel.', mobileSubtitle:'Hazır ürünler ya da adınıza özel nakış.', stageNote:'Animasyon alanı · konsept önizleme', occasionTitle:'Hangi vesile için?', occasionNote:'Özel anlar, daha anlamlı ♡', occasionLabel:'Vesile', wedding:'Düğün', baptism:'Vaftiz', newyear:'Yılbaşı', baby:'Bebek', gift:'Hediye', popularCategories:'Popüler kategoriler', seeAll:'Tümünü gör', threeSteps:'Kişiselleştirme 3 adımda', chooseProduct:'Ürünü seç', chooseProductHint:'Beğendiğin modeli bul', writeName:'İsmi yaz', writeNameHint:'Nasıl nakışlansın?', sendStep:'WhatsApp’tan gönder', sendStepHint:'Bizi bilgilendir' });
+Object.assign(translations.en, { home:'Home', mobileHeadline:'Every stitch, made for you.', mobileSubtitle:'Ready-made pieces or embroidery with your name.', stageNote:'Animation stage · concept preview', occasionTitle:'What’s the occasion?', occasionNote:'Little details, meaningful moments ♡', occasionLabel:'Occasion', wedding:'Wedding', baptism:'Baptism', newyear:'New Year', baby:'Baby', gift:'Gift', popularCategories:'Popular categories', seeAll:'View all', threeSteps:'Personalize in 3 steps', chooseProduct:'Choose a product', chooseProductHint:'Find your favorite piece', writeName:'Write the name', writeNameHint:'Make it your own', sendStep:'Send via WhatsApp', sendStepHint:'Tell us your idea' });
 $('#year').textContent = new Date().getFullYear(); setLanguage('tr');
 
 // Hero rotation is independent of catalog selection and personalization state.
 const heroShowcase = document.querySelector('.hero-showcase');
 const heroCards = [...document.querySelectorAll('[data-showcase-product]')];
 const heroMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+const heroDesktopQuery = matchMedia('(min-width:801px)');
 let heroIndex = 0;
 let heroPaused = false;
 let heroTimer;
@@ -124,7 +129,7 @@ function renderHeroShowcase() {
 }
 function scheduleHeroRotation() {
   clearInterval(heroTimer);
-  if (!heroPaused && !heroMotionPreference.matches && !document.hidden) {
+  if (!heroPaused && !heroMotionPreference.matches && !document.hidden && heroDesktopQuery.matches) {
     heroTimer = setInterval(() => { heroIndex = (heroIndex + 1) % heroCards.length; renderHeroShowcase(); }, 3000);
   }
 }
@@ -135,6 +140,7 @@ document.querySelector('.showcase-pause').addEventListener('click', () => {
 });
 document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', renderHeroShowcase));
 heroMotionPreference.addEventListener('change', scheduleHeroRotation);
+heroDesktopQuery.addEventListener('change', scheduleHeroRotation);
 document.addEventListener('visibilitychange', () => { renderHeroShowcase(); scheduleHeroRotation(); });
 renderHeroShowcase();
 scheduleHeroRotation();
@@ -152,6 +158,7 @@ function revealHeader() {
 }
 function updateHeaderScroll() {
   const y = Math.max(0, window.scrollY);
+  if (headerMobileQuery.matches) { revealHeader(); headerLastScrollY = y; headerScrollFrame = undefined; return; }
   const compact = siteHeader.classList.contains('is-scrolled');
   siteHeader.classList.toggle('is-scrolled', compact ? y > 20 : y > 80);
   const delta = y - headerLastScrollY;
@@ -207,3 +214,56 @@ headerBadge.addEventListener('animationend', () => headerBadge.classList.remove(
 updateHeaderLanguage();
 updateHeaderActiveLink();
 updateHeaderScroll();
+
+
+// Mobile homepage: menu panel, occasion context and fixed navigation state.
+let selectedOccasion = 'wedding';
+function updateMobileMenuLabel() {
+  const open = !document.querySelector('#mobile-menu').hidden;
+  const label = open ? (lang === 'tr' ? 'Kapat' : 'Close') : (lang === 'tr' ? 'Menü' : 'Menu');
+  document.querySelector('.menu-word').textContent = label;
+  document.querySelector('.menu-symbol').textContent = open ? '×' : '☰';
+  document.querySelector('#menu-toggle').setAttribute('aria-label', label);
+}
+function setMobileMenuOpen(open) {
+  const panel = document.querySelector('#mobile-menu');
+  panel.hidden = !open;
+  document.querySelector('#menu-toggle').setAttribute('aria-expanded', String(open));
+  const modal = open && headerMobileQuery.matches;
+  document.body.classList.toggle('mobile-menu-open', modal);
+  document.querySelectorAll('main, .footer, .bottom-nav').forEach(element => element.inert = modal);
+  updateMobileMenuLabel();
+  if (open) panel.querySelector('a').focus();
+  else document.querySelector('#menu-toggle').focus({ preventScroll: true });
+}
+headerMobileQuery.addEventListener('change', () => setMobileMenuOpen(false));
+document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', updateMobileMenuLabel));
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Tab' || !headerMobileQuery.matches || document.querySelector('#mobile-menu').hidden || document.querySelector('dialog[open]')) return;
+  const focusable = [...siteHeader.querySelectorAll('a[href], button')].filter(element => element.getClientRects().length && !element.disabled);
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+});
+document.querySelectorAll('[data-occasion]').forEach(button => button.addEventListener('click', () => {
+  selectedOccasion = button.dataset.occasion;
+  document.querySelectorAll('[data-occasion]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+  document.querySelector('#catalog').scrollIntoView({ behavior: headerReducedMotion.matches ? 'instant' : 'smooth' });
+}));
+function updateBottomNavigation() {
+  const target = location.hash || '#catalog';
+  document.querySelectorAll('.bottom-nav a').forEach(link => {
+    if (link.hash === target) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+window.addEventListener('hashchange', updateBottomNavigation);
+updateMobileMenuLabel();
+updateBottomNavigation();
+function formatMobileHeadline() {
+  const headline = document.querySelector('[data-i18n="mobileHeadline"]');
+  const parts = t('mobileHeadline').split(', ');
+  headline.replaceChildren(document.createTextNode(`${parts[0]},`), document.createElement('br'), document.createTextNode(parts.slice(1).join(', ')));
+}
+document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', formatMobileHeadline));
+formatMobileHeadline();

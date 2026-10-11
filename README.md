@@ -35,3 +35,11 @@ The basket contains quote requests, not purchases; its contents reset on page re
 Commit and push the website files to the desired branch. In GitHub, open **Settings → Pages**, choose **Deploy from a branch**, select that branch and **/(root)**, then save. GitHub will provide the site address once deployment finishes. All local asset paths are relative and work under a repository Pages path. No workflow or build tool is needed. A custom domain can be configured later in Pages settings.
 
 Publication has not been performed by this implementation.
+
+## Mobile homepage
+
+At widths up to 800px, the homepage follows the app-like mobile reference: horizontal logo, Menu/Close panel, reserved animation stage, short bilingual headline, two CTAs, yellow occasion chips, compact categories, three personalization steps and four-item fixed navigation. The mobile header stays visible.
+
+`assets/images/kozipui-logo-mobile.png` is used through a responsive picture source; the desktop logo remains unchanged. The element `[data-animation-stage="reserved"]` is an illustrated placeholder for the future external animation, not a final animation or real product photography. Replace its contents when an approved animation asset and integration behavior are supplied. Desktop keeps its existing native product rotation.
+
+Occasion selection adds context to personalization requests; it does not claim to filter a separate product inventory. The basket badge updates in both header and mobile navigation.
