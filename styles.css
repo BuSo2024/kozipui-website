@@ -142,7 +142,7 @@ body{background:#fff}
 .hero .hero-copy .actions{gap:8px}.hero .hero-copy .button{border-radius:999px;font-size:12px;min-height:48px;padding:12px 8px;font-weight:750}
 .hero .secondary{border:1.5px solid #111;color:#111}.hero .primary{color:white;background:#F26A2E}
 .values{display:none}
-.mobile-occasions{margin:-9px 0 -4px;padding:14px 16px 12px;background:#FFC400;border-radius:24px 24px 0 0}
+.mobile-occasions{margin:-7px 0 -4px;padding:14px 16px 12px;background:#FFC400;border-radius:24px 24px 0 0}
 .occasion-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}.occasion-heading h2{font-size:clamp(19px,5.2vw,22px);font-weight:700;letter-spacing:-.03em}.occasion-heading>span{max-width:104px;font:italic 10.5px/1.25 Georgia,serif}
 .occasion-chips{display:flex;gap:8px;overflow-x:auto;padding:0;scrollbar-width:thin;scrollbar-color:#a47f00 transparent}
 .occasion-chips button{display:flex;align-items:center;justify-content:center;flex-shrink:0;gap:7px;height:42px;min-height:42px;padding:6px 15px;border:0;border-radius:999px;background:white;color:#111;font-size:12px;font-weight:700}
