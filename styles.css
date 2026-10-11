@@ -143,7 +143,7 @@ body{background:#fff}
 .hero .secondary{border:1.5px solid #111;color:#111}.hero .primary{color:white;background:#F26A2E}
 .values{display:none}
 .mobile-occasions{margin:-16px 0 -4px;padding:14px 16px 12px;background:#FFC400;border-radius:24px 24px 0 0}
-.occasion-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}.occasion-heading h2{font-size:24px;font-weight:700;letter-spacing:-.03em}.occasion-heading>span{max-width:95px;font:italic 12px/1.25 Georgia,serif}
+.occasion-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}.occasion-heading h2{font-size:clamp(19px,5.2vw,22px);font-weight:700;letter-spacing:-.03em}.occasion-heading>span{max-width:104px;font:italic 10.5px/1.25 Georgia,serif}
 .occasion-chips{display:flex;gap:8px;overflow-x:auto;padding:0;scrollbar-width:thin;scrollbar-color:#a47f00 transparent}
 .occasion-chips button{display:flex;align-items:center;justify-content:center;flex-shrink:0;gap:7px;height:42px;min-height:42px;padding:6px 15px;border:0;border-radius:999px;background:white;color:#111;font-size:12px;font-weight:700}
 .occasion-chips button>span:first-child{font-size:20px}.occasion-chips button[aria-pressed=true]{background:#111;color:white}.occasion-chips button[aria-pressed=true]>span:first-child{color:#FFC400}
@@ -171,7 +171,7 @@ body{background:#fff}
 .mobile-menu-contact{margin-top:auto;padding-top:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}.menu-whatsapp{min-height:48px;flex:1;border:0;border-radius:999px;background:#25D366;color:#fff;font-size:14px;font-weight:750;padding:12px 24px}
 body.mobile-menu-open{overflow:hidden}body.mobile-menu-open .bottom-nav{visibility:hidden}
 }
-@media(max-width:360px){.header,.header.is-scrolled{padding-left:12px;padding-right:12px}.header .brand img,.header.is-scrolled .brand img{width:160px;max-width:none}.header .hamburger{min-width:86px;padding:0 12px}.hero .hero-copy .button{font-size:10px}.occasion-heading h2{font-size:22px}.mobile-category-heading h2{font-size:21px}#catalog .catalog-image img{height:90px}}
+@media(max-width:360px){.header,.header.is-scrolled{padding-left:12px;padding-right:12px}.header .brand img,.header.is-scrolled .brand img{width:160px;max-width:none}.header .hamburger{min-width:86px;padding:0 12px}.hero .hero-copy .button{font-size:10px}.occasion-heading h2{font-size:19px}.mobile-category-heading h2{font-size:21px}#catalog .catalog-image img{height:90px}}
 .app-icon{width:24px;height:24px;flex-shrink:0}
 @media(max-width:800px){.bottom-nav .app-icon{width:26px;height:26px}.bottom-nav a:first-child .app-icon{fill:currentColor;stroke:none}.bottom-nav a:nth-child(2) .app-icon{color:var(--orange)}.occasion-chips .app-icon{width:22px;height:22px}.mobile-step-grid .step-icon svg{width:36px;height:36px}.hero h1{max-width:100%}#mobile-menu a::after{content:"";width:7px;height:7px;border-top:1.5px solid var(--slate);border-right:1.5px solid var(--slate);transform:rotate(45deg)}}
 
