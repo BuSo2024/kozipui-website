@@ -79,3 +79,37 @@
 .bottom-nav .contact-whatsapp:hover{background:#daf4e3}
 .bottom-nav .contact-whatsapp:focus-visible{outline:3px solid #137c3b;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.header .header-whatsapp{transition:none}}
+
+/* Mobile hierarchy: see the product first, then understand and act. */
+@media(max-width:800px){
+.hero{padding-top:16px;padding-bottom:30px;gap:24px}
+.hero .hero-art{order:-1}
+.hero .hero-showcase{height:350px;max-width:560px;border-radius:24px}
+.hero .hero-copy{width:100%}
+.hero .hero-copy .eyebrow{margin-bottom:12px;font-size:9px;letter-spacing:1.6px}
+.hero h1{font-size:clamp(32px,6.5vw,44px);line-height:1.1;max-width:650px}
+.hero .intro{font-size:14px;line-height:1.65;margin:16px 0 20px;max-width:620px}
+.hero .hero-copy .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero .hero-copy .button{min-height:48px;padding:12px 10px;font-size:11px;gap:8px;text-align:center}
+.hero .little-note{margin-top:14px;font-size:10px}
+.hero-showcase .art-label{top:18px;left:22px;font-size:19px}
+.hero-showcase .showcase-card{height:237px;top:58px;left:9%;width:60%;border-radius:17px}
+.hero-showcase .showcase-card img{height:179px;padding-top:8px}
+.hero-showcase .showcase-card figcaption{padding:0 16px}
+.hero-showcase .showcase-card strong{font-size:19px}
+.hero-showcase .showcase-card small{font-size:9px}
+.hero-showcase .accent-heart{left:10px;top:125px;font-size:28px}
+.hero-showcase .accent-name{left:22px;bottom:35px;font-size:18px}
+.hero-showcase .accent-leaf{right:17px;bottom:69px;font-size:30px}
+.hero-showcase .showcase-controls{right:12px;bottom:18px;gap:8px}
+.hero-showcase .showcase-pause{min-height:44px;min-width:44px;padding:8px 12px}
+.hero-showcase .concept-label{bottom:9px;font-size:8px}
+#mobile-menu:not([hidden]){display:grid;gap:4px;margin:0 12px;padding:12px;background:var(--white);border:1px solid var(--powder);border-radius:18px;box-shadow:0 16px 32px #405d7824;max-height:calc(100dvh - 180px);overflow-y:auto}
+#mobile-menu a{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:12px 16px;border-radius:10px;font-size:14px;color:var(--ink)}
+#mobile-menu a::after{content:"↗";color:var(--slate);font-size:17px}
+#mobile-menu a:nth-child(-n+2){background:var(--cloud);font-weight:700}
+#mobile-menu a:hover,#mobile-menu a[aria-current="location"]{background:var(--mist)}
+#mobile-menu a:focus-visible{outline-offset:-3px}
+.bottom-nav a,.bottom-nav button{min-height:48px}
+}
+@media(max-width:360px){.hero .hero-showcase{height:320px}.hero-showcase .showcase-card{height:214px;top:53px}.hero-showcase .showcase-card img{height:157px}.hero-showcase .showcase-card figcaption{padding:0 12px}.hero-showcase .showcase-card strong{font-size:17px}.hero .hero-copy .button{font-size:10px}}
