@@ -196,3 +196,32 @@ body.mobile-menu-open{overflow:hidden}body.mobile-menu-open .bottom-nav{visibili
 .stage-dots{right:23px;bottom:19px}
 .stage-leaf{right:22px;top:18px}
 }
+
+/* Mobile density pass: generous phone screens, compact first-screen hierarchy. */
+@media(max-width:800px){
+body{padding-top:80px;padding-bottom:calc(86px + env(safe-area-inset-bottom));background:#F8FBFF}
+.header,.header.is-scrolled{position:fixed;top:0;left:0;right:0;height:80px;min-height:80px;padding:0 8px;gap:4px;background:#fffffffa}
+.header .header-tools{gap:4px}
+.header .header-tools>.languages{width:90px;height:46px;padding:0;border-radius:999px}
+.header .header-tools>.languages button{font-size:10px;width:44px;height:44px}
+.header .hamburger{width:64px;min-width:64px;height:44px;padding:0 5px;gap:3px}
+.header .menu-word{font-size:11px}.header .menu-symbol{font-size:15px}
+.header .brand img,.header.is-scrolled .brand img{width:clamp(140px,calc(100vw - 178px),240px);height:auto;max-width:100%;max-height:none}
+.hero{width:calc(100% - 24px);gap:12px;padding-bottom:16px}
+.hero .hero-art{aspect-ratio:1.72;min-height:220px;background:radial-gradient(ellipse at 75% 18%,#ffffffba,transparent 58%),linear-gradient(130deg,#EAF3FB,#D7E8F6)}
+.mobile-animation-stage::before{right:-7%;top:9%;width:72%;height:78%;border-radius:42% 58% 38% 62%;background:repeating-linear-gradient(12deg,#ffffff50 0px,#ffffff50 1px,transparent 1px,transparent 5px);box-shadow:inset 0 0 28px #ffffff8c}
+.stage-script{left:19px;top:18px;font-size:22px;line-height:1.04;width:95px}
+.mobile-animation-stage .stage-tote{left:15%;bottom:-3%;width:62%;height:98%;z-index:3}
+.mobile-animation-stage .stage-towel{right:6%;top:3%;width:54%;height:96%;z-index:2}
+.mobile-animation-stage .stage-shirt{right:-12%;bottom:4%;width:48%;height:86%;z-index:4}
+.stage-personal-tag{position:absolute;left:8%;top:59%;z-index:5;background:#FFFFFF;border:1px solid #d7e8f6;border-radius:999px;padding:4px 9px;box-shadow:0 3px 8px #6e829515;rotate:-8deg;color:#2F2C2A;font-size:9px;font-weight:700}
+.stage-heart{left:15px;bottom:37%;font-size:36px}.stage-leaf{right:19px;top:13px;font-size:34px}
+.stage-note{font-size:7px;left:19px;bottom:12%}
+.stage-dots{right:20px;bottom:16px}
+.hero-copy{padding:0 6px}.hero h1{font-size:clamp(30px,8vw,38px);line-height:1.04;letter-spacing:-.03em}
+.hero .intro{font-size:13px;line-height:1.45;margin:8px 0 12px;color:#626b76}
+.hero .hero-copy .actions{gap:8px}.hero .hero-copy .button{min-height:46px;font-size:12px;padding:10px 8px}
+.hero .secondary{border:1.5px solid #111;background:white;color:#111}
+#mobile-menu:not([hidden]){top:80px}
+}
+@media(max-width:360px){.header .brand img,.header.is-scrolled .brand img{width:calc(100vw - 178px)}.hero .hero-copy .button{font-size:10px}.hero .hero-art{min-height:210px}.stage-script{font-size:20px;max-width:82px}.stage-personal-tag{font-size:8px;left:6%}}
