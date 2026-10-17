@@ -103,47 +103,57 @@ Object.assign(translations.tr, { home:'Ana sayfa', stagePersonal:'İsme özel', 
 Object.assign(translations.en, { home:'Home', stagePersonal:'Made for you', mobileHeadline:'Every stitch, made for you.', mobileSubtitle:'Ready-made pieces or embroidery with your name.', stageNote:'Animation stage · concept preview', occasionTitle:'What’s the occasion?', occasionNote:'Little details, meaningful moments ♡', occasionLabel:'Occasion', wedding:'Wedding', baptism:'Baptism', newyear:'New Year', baby:'Baby', gift:'Gift', popularCategories:'Popular categories', seeAll:'View all', threeSteps:'Personalize in 3 steps', chooseProduct:'Choose a product', chooseProductHint:'Find your favorite piece', writeName:'Write the name', writeNameHint:'Make it your own', sendStep:'Confirm and order', sendStepHint:'Tell us your idea' });
 $('#year').textContent = new Date().getFullYear(); setLanguage('tr');
 
-// Hero rotation is independent of catalog selection and personalization state.
+// Desktop film is decorative; mobile keeps its existing illustration stage.
 const heroShowcase = document.querySelector('.hero-showcase');
-const heroCards = [...document.querySelectorAll('[data-showcase-product]')];
+const heroFilm = document.querySelector('.hero-film');
+const heroFilmToggle = document.querySelector('.hero-film-toggle');
 const heroMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 const heroDesktopQuery = matchMedia('(min-width:801px)');
-let heroIndex = 0;
-let heroPaused = false;
-let heroTimer;
-function renderHeroShowcase() {
-  heroCards.forEach((card, index) => {
-    const offset = (index - heroIndex + heroCards.length) % heroCards.length;
-    const role = ['is-active', 'is-next', 'is-hidden', 'is-previous'][offset];
-    card.classList.remove('is-active', 'is-next', 'is-hidden', 'is-previous');
-    card.classList.add(role);
-    card.setAttribute('aria-hidden', String(offset !== 0));
-    const product = products.find(item => item.id === card.dataset.showcaseProduct);
-    card.querySelector('.showcase-name').textContent = product[lang];
-  });
-  document.querySelector('.showcase-position').textContent = `${String(heroIndex + 1).padStart(2, '0')} / 04`;
-  const control = document.querySelector('.showcase-pause');
-  control.textContent = lang === 'tr' ? (heroPaused ? 'Devam et' : 'Duraklat') : (heroPaused ? 'Resume' : 'Pause');
-  control.setAttribute('aria-pressed', String(heroPaused));
-  heroShowcase.classList.toggle('is-paused', heroPaused || document.hidden);
+let heroFilmPaused = heroMotionPreference.matches;
+let heroFilmUserOptedIn = false;
+let heroFilmInView = false;
+function renderHeroFilmControl() {
+  const paused = heroFilm.paused;
+  heroFilmToggle.dataset.paused = String(paused);
+  heroFilmToggle.setAttribute('aria-pressed', String(paused));
+  heroFilmToggle.setAttribute('aria-label', lang === 'tr' ? (paused ? 'Devam et' : 'Duraklat') : (paused ? 'Resume' : 'Pause'));
 }
-function scheduleHeroRotation() {
-  clearInterval(heroTimer);
-  if (!heroPaused && !heroMotionPreference.matches && !document.hidden && heroDesktopQuery.matches) {
-    heroTimer = setInterval(() => { heroIndex = (heroIndex + 1) % heroCards.length; renderHeroShowcase(); }, 3000);
+function syncHeroFilm() {
+  if (heroDesktopQuery.matches && !heroFilm.poster) heroFilm.poster = heroFilm.dataset.poster;
+  const shouldPlay = heroDesktopQuery.matches && heroFilmInView && !document.hidden && !heroFilmPaused && (!heroMotionPreference.matches || heroFilmUserOptedIn);
+  if (!shouldPlay) {
+    heroFilm.pause();
+    renderHeroFilmControl();
+    return;
   }
+  if (!heroFilm.hasAttribute('src')) heroFilm.src = heroFilm.dataset.src;
+  heroFilm.muted = true;
+  heroFilm.play().catch(error => {
+    if (error.name === 'AbortError') return;
+    heroFilmPaused = true;
+    renderHeroFilmControl();
+  });
 }
-document.querySelector('.showcase-pause').addEventListener('click', () => {
-  heroPaused = !heroPaused;
-  renderHeroShowcase();
-  scheduleHeroRotation();
+heroFilmToggle.addEventListener('click', () => {
+  heroFilmPaused = !heroFilm.paused;
+  heroFilmUserOptedIn = true;
+  syncHeroFilm();
 });
-document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', renderHeroShowcase));
-heroMotionPreference.addEventListener('change', scheduleHeroRotation);
-heroDesktopQuery.addEventListener('change', scheduleHeroRotation);
-document.addEventListener('visibilitychange', () => { renderHeroShowcase(); scheduleHeroRotation(); });
-renderHeroShowcase();
-scheduleHeroRotation();
+heroFilm.addEventListener('play', renderHeroFilmControl);
+heroFilm.addEventListener('pause', renderHeroFilmControl);
+heroMotionPreference.addEventListener('change', () => {
+  heroFilmUserOptedIn = false;
+  heroFilmPaused = heroMotionPreference.matches;
+  syncHeroFilm();
+});
+heroDesktopQuery.addEventListener('change', syncHeroFilm);
+document.addEventListener('visibilitychange', syncHeroFilm);
+document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', renderHeroFilmControl));
+new IntersectionObserver(entries => {
+  heroFilmInView = entries[0].isIntersecting;
+  syncHeroFilm();
+}, { threshold: 0 }).observe(heroShowcase);
+renderHeroFilmControl();
 
 // Header-only scroll, contextual CTA and basket feedback.
 const siteHeader = document.querySelector('.header');
